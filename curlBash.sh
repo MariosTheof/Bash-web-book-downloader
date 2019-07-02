@@ -5,15 +5,19 @@ function read_dom {
 }
 
 url=https://practicalguidetoevil.wordpress.com/table-of-contents/
+#url=$1
 
 curl $url | grep -Eoi '<a [^>]+>' | grep -Eo 'href="[^\"]+"' | grep -Eo '(http|https)://[^"]+' | grep chapter > result.html
 
 ARRAY=()
 while IFS= read -r line
 do 
-	echo "HOP"
 	ARRAY+=("$line")	
 done < result.html
 
-printf '%s\n' "${ARRAY[@]}"
-
+counter=1
+for i in "${ARRAY[@]}"
+do
+	sh ./curlGetText.sh $i $counter
+	counter=$((counter+1))
+done
